@@ -1,0 +1,277 @@
+import { PageContainer, ProTable, ProColumns } from '@ant-design/pro-components';
+import { Tag, Space, Button, Drawer, Descriptions, Timeline, Progress } from 'antd';
+import { useState, useRef } from 'react';
+import { request } from '@umijs/max';
+import { EyeOutlined, ClockCircleOutlined, CheckCircleOutlined, WarningOutlined } from '@ant-design/icons';
+import type { ActionType } from '@ant-design/pro-components';
+import moment from 'moment';
+
+interface ProjectType {
+  id: string;
+  name: string;
+  school: string;
+  startDate: string;
+  endDate: string;
+  estimatedDays: number;
+  actualDays: number;
+  status: string;
+  amount: number;
+  profit: number;
+  members: any[];
+  bugs: number;
+  tickets: number;
+}
+
+const Projects: React.FC = () => {
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [currentProject, setCurrentProject] = useState<ProjectType | null>(null);
+  const actionRef = useRef<ActionType>();
+
+  const columns: ProColumns<ProjectType>[] = [
+    {
+      title: '项目名称',
+      dataIndex: 'name',
+      key: 'name',
+      fixed: 'left',
+      width: 200,
+    },
+    {
+      title: '学校',
+      dataIndex: 'school',
+      key: 'school',
+      width: 150,
+    },
+    {
+      title: '开始时间',
+      dataIndex: 'startDate',
+      key: 'startDate',
+      valueType: 'date',
+      width: 120,
+    },
+    {
+      title: '结束时间',
+      dataIndex: 'endDate',
+      key: 'endDate',
+      valueType: 'date',
+      width: 120,
+    },
+    {
+      title: '预计天数',
+      dataIndex: 'estimatedDays',
+      key: 'estimatedDays',
+      width: 100,
+      render: (text) => `${text} 天`,
+    },
+    {
+      title: '实际天数',
+      dataIndex: 'actualDays',
+      key: 'actualDays',
+      width: 100,
+      render: (text, record) => {
+        const isOvertime = record.actualDays > record.estimatedDays;
+        return (
+          <span style={{ color: isOvertime ? '#ff4d4f' : '#52c41a' }}>
+            {text} 天
+            {isOvertime && ` (+${record.actualDays - record.estimatedDays})`}
+          </span>
+        );
+      },
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      width: 100,
+      render: (status: string) => {
+        const statusMap: Record<string, { color: string; text: string; icon: any }> = {
+          planning: { color: 'blue', text: '规划中', icon: <ClockCircleOutlined /> },
+          ongoing: { color: 'processing', text: '进行中', icon: <ClockCircleOutlined /> },
+          completed: { color: 'success', text: '已完成', icon: <CheckCircleOutlined /> },
+          delayed: { color: 'error', text: '已延期', icon: <WarningOutlined /> },
+        };
+        const config = statusMap[status] || statusMap.ongoing;
+        return <Tag color={config.color} icon={config.icon}>{config.text}</Tag>;
+      },
+    },
+    {
+      title: '成交金额',
+      dataIndex: 'amount',
+      key: 'amount',
+      width: 120,
+      render: (text) => `¥${text.toLocaleString()}`,
+    },
+    {
+      title: '预估利润',
+      dataIndex: 'profit',
+      key: 'profit',
+      width: 120,
+      render: (text) => `¥${text.toLocaleString()}`,
+    },
+    {
+      title: 'BUG数',
+      dataIndex: 'bugs',
+      key: 'bugs',
+      width: 80,
+      render: (text) => <Tag color="red">{text}</Tag>,
+    },
+    {
+      title: '工单数',
+      dataIndex: 'tickets',
+      key: 'tickets',
+      width: 80,
+      render: (text) => <Tag color="orange">{text}</Tag>,
+    },
+    {
+      title: '操作',
+      key: 'action',
+      fixed: 'right',
+      width: 100,
+      render: (_, record) => (
+        <Space>
+          <Button
+            type="link"
+            icon={<EyeOutlined />}
+            onClick={() => {
+              setCurrentProject(record);
+              setDrawerVisible(true);
+            }}
+          >
+            详情
+          </Button>
+        </Space>
+      ),
+    },
+  ];
+
+  return (
+    <PageContainer title="项目管理" subTitle="查看和管理所有定制项目">
+      <ProTable<ProjectType>
+        columns={columns}
+        actionRef={actionRef}
+        request={async (params, sort, filter) => {
+          const response = await request('/api/projects', {
+            params: { ...params, ...sort, ...filter },
+          });
+          return {
+            data: response.data,
+            success: true,
+            total: response.data.length,
+          };
+        }}
+        rowKey="id"
+        search={{
+          labelWidth: 'auto',
+        }}
+        pagination={{
+          pageSize: 10,
+        }}
+        scroll={{ x: 1500 }}
+        dateFormatter="string"
+        toolBarRender={() => [
+          <Button key="export" type="primary">
+            导出数据
+          </Button>,
+        ]}
+      />
+
+      {/* 项目详情抽屉 */}
+      <Drawer
+        title="项目详情"
+        width={720}
+        open={drawerVisible}
+        onClose={() => setDrawerVisible(false)}
+      >
+        {currentProject && (
+          <div>
+            <Descriptions title="基本信息" column={2} bordered>
+              <Descriptions.Item label="项目名称" span={2}>
+                {currentProject.name}
+              </Descriptions.Item>
+              <Descriptions.Item label="学校">
+                {currentProject.school}
+              </Descriptions.Item>
+              <Descriptions.Item label="状态">
+                {currentProject.status === 'completed' ? (
+                  <Tag color="success">已完成</Tag>
+                ) : currentProject.status === 'ongoing' ? (
+                  <Tag color="processing">进行中</Tag>
+                ) : (
+                  <Tag color="blue">规划中</Tag>
+                )}
+              </Descriptions.Item>
+              <Descriptions.Item label="开始时间">
+                {currentProject.startDate}
+              </Descriptions.Item>
+              <Descriptions.Item label="结束时间">
+                {currentProject.endDate}
+              </Descriptions.Item>
+              <Descriptions.Item label="预计天数">
+                {currentProject.estimatedDays} 天
+              </Descriptions.Item>
+              <Descriptions.Item label="实际天数">
+                {currentProject.actualDays} 天
+              </Descriptions.Item>
+              <Descriptions.Item label="成交金额">
+                ¥{currentProject.amount.toLocaleString()}
+              </Descriptions.Item>
+              <Descriptions.Item label="预估利润">
+                ¥{currentProject.profit.toLocaleString()}
+              </Descriptions.Item>
+              <Descriptions.Item label="BUG数量">
+                <Tag color="red">{currentProject.bugs}</Tag>
+              </Descriptions.Item>
+              <Descriptions.Item label="工单数量">
+                <Tag color="orange">{currentProject.tickets}</Tag>
+              </Descriptions.Item>
+            </Descriptions>
+
+            <Descriptions title="项目进度" column={1} bordered style={{ marginTop: 24 }}>
+              <Descriptions.Item label="完成度">
+                <Progress
+                  percent={
+                    currentProject.status === 'completed'
+                      ? 100
+                      : Math.min(
+                          Math.round(
+                            (currentProject.actualDays / currentProject.estimatedDays) * 100
+                          ),
+                          95
+                        )
+                  }
+                  status={
+                    currentProject.status === 'completed'
+                      ? 'success'
+                      : currentProject.actualDays > currentProject.estimatedDays
+                      ? 'exception'
+                      : 'active'
+                  }
+                />
+              </Descriptions.Item>
+            </Descriptions>
+
+            <div style={{ marginTop: 24 }}>
+              <h3>项目成员</h3>
+              <Timeline>
+                {currentProject.members?.map((member: any, index: number) => (
+                  <Timeline.Item key={index} color={member.risk ? 'red' : 'green'}>
+                    <p><strong>{member.name}</strong> - {member.role}</p>
+                    <p>开始时间: {member.startDate}</p>
+                    <p>结束时间: {member.endDate}</p>
+                    {member.risk && (
+                      <p style={{ color: '#ff4d4f' }}>
+                        <WarningOutlined /> 风险备注: {member.risk}
+                      </p>
+                    )}
+                  </Timeline.Item>
+                ))}
+              </Timeline>
+            </div>
+          </div>
+        )}
+      </Drawer>
+    </PageContainer>
+  );
+};
+
+export default Projects;
+
