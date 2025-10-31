@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { Tour, Button } from 'antd';
 import type { TourProps } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
+import { useResponsive } from '@/utils/responsive';
 
 interface GuideTourProps {
   // 是否自动开始（首次访问时）
@@ -15,20 +16,26 @@ interface GuideTourProps {
 
 const GuideTour: React.FC<GuideTourProps> = ({ autoStart = true }) => {
   const [open, setOpen] = useState(false);
+  const { isMobile } = useResponsive();
 
   useEffect(() => {
+    // 移动端不显示引导
+    if (isMobile) {
+      return;
+    }
+
     // 检查是否是首次访问
     const hasVisited = localStorage.getItem('hasVisitedGuideTour');
-    
+
     if (autoStart && !hasVisited) {
       // 延迟1秒后显示引导，让页面先加载完成
       const timer = setTimeout(() => {
         setOpen(true);
       }, 1000);
-      
+
       return () => clearTimeout(timer);
     }
-  }, [autoStart]);
+  }, [autoStart, isMobile]);
 
   const handleClose = () => {
     setOpen(false);
@@ -127,6 +134,11 @@ const GuideTour: React.FC<GuideTourProps> = ({ autoStart = true }) => {
       target: null,
     },
   ];
+
+  // 移动端不渲染任何内容
+  if (isMobile) {
+    return null;
+  }
 
   return (
     <>

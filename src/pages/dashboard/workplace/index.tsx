@@ -443,7 +443,7 @@ const Workplace: FC = () => {
             loading={data?.radarData?.length === 0}
           >
             <Radar
-              height={isMobile ? 250 : 343}
+              height={isMobile ? 300 : 343}
               data={data?.radarData || []}
               xField="label"
               colorField="name"
@@ -454,16 +454,43 @@ const Workplace: FC = () => {
                   fillOpacity: 0.4,
                 },
               }}
+              scale={{
+                y: {
+                  domainMin: 0,
+                  domainMax: 10,
+                },
+              }}
               axis={{
+                x: {
+                  title: false,
+                  label: {
+                    style: {
+                      fontSize: isMobile ? 11 : 12,
+                    },
+                  },
+                },
                 y: {
                   gridStrokeOpacity: 0.5,
+                  label: {
+                    style: {
+                      fontSize: isMobile ? 10 : 12,
+                    },
+                  },
                 },
               }}
               legend={{
                 color: {
                   position: 'bottom',
                   layout: { justifyContent: 'center' },
+                  itemName: {
+                    style: {
+                      fontSize: isMobile ? 12 : 14,
+                    },
+                  },
                 },
+              }}
+              style={{
+                maxWidth: '100%',
               }}
             />
           </Card>

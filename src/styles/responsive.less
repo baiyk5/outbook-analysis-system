@@ -40,11 +40,11 @@
 .mobile-card {
   @media (max-width: @screen-md) {
     margin-bottom: 12px !important;
-    
+
     .ant-card-body {
       padding: 12px !important;
     }
-    
+
     .ant-card-head {
       padding: 12px !important;
       min-height: auto !important;
@@ -332,25 +332,17 @@
 // 移动端图表
 .mobile-chart {
   @media (max-width: @screen-md) {
-    height: 250px !important;
-    overflow: hidden !important;
-
     .ant-card-body {
       padding: 12px !important;
       overflow: hidden !important;
     }
 
-    canvas {
-      max-height: 250px !important;
-      max-width: 100% !important;
-    }
-
     // 确保所有图表容器不溢出
     > div,
-    svg {
+    svg,
+    canvas {
       max-width: 100% !important;
       width: 100% !important;
-      overflow: hidden !important;
     }
 
     // 词云图特殊处理

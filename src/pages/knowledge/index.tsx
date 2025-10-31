@@ -202,7 +202,7 @@ const Knowledge: React.FC = () => {
     >
       {/* 统计卡片 */}
       <Row gutter={isMobile ? [8, 8] : 16} style={{ marginBottom: isMobile ? 12 : 24 }} className="mobile-gutter mobile-statistic">
-        <Col xs={12} sm={12} md={6} lg={6}>
+        <Col xs={6} sm={6} md={6} lg={6}>
           <Card className="mobile-card">
             <Statistic
               title="文档总数"
@@ -211,7 +211,7 @@ const Knowledge: React.FC = () => {
             />
           </Card>
         </Col>
-        <Col xs={12} sm={12} md={6} lg={6}>
+        <Col xs={6} sm={6} md={6} lg={6}>
           <Card className="mobile-card">
             <Statistic
               title="需求报告"
@@ -220,7 +220,7 @@ const Knowledge: React.FC = () => {
             />
           </Card>
         </Col>
-        <Col xs={12} sm={12} md={6} lg={6}>
+        <Col xs={6} sm={6} md={6} lg={6}>
           <Card className="mobile-card">
             <Statistic
               title="验收报告"
@@ -229,7 +229,7 @@ const Knowledge: React.FC = () => {
             />
           </Card>
         </Col>
-        <Col xs={12} sm={12} md={6} lg={6}>
+        <Col xs={6} sm={6} md={6} lg={6}>
           <Card className="mobile-card">
             <Statistic
               title="设计文档"
