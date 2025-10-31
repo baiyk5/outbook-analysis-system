@@ -8,7 +8,20 @@ const useStyles = createStyles(({ token }) => {
   return {
     dropdown: {
       [`@media screen and (max-width: ${token.screenXS}px)`]: {
-        width: '100%',
+        width: 'auto',
+        minWidth: '160px',
+        maxWidth: '90vw',
+      },
+      // 移动端下拉菜单优化
+      [`@media screen and (max-width: ${token.screenMD}px)`]: {
+        '.ant-dropdown-menu': {
+          minWidth: '160px',
+          maxWidth: '90vw',
+        },
+        '.ant-dropdown-menu-item': {
+          padding: '8px 12px',
+          fontSize: '14px',
+        },
       },
     },
   };
