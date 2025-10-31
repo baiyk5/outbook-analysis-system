@@ -4,6 +4,7 @@ import { Drawer, message } from 'antd';
 import { askQuestion } from '@/services/deepseek';
 import { getSystemDataSummary, analyzeByQuestion } from '@/services/dataAnalysis';
 import './index.less';
+import { useResponsive } from '@/utils/responsive';
 
 interface Message {
   key: string;
@@ -18,6 +19,7 @@ interface AIChatProps {
 }
 
 const AIChat: React.FC<AIChatProps> = ({ open, onClose }) => {
+  const { isMobile } = useResponsive();
   const [messages, setMessages] = useState<Message[]>([
     {
       key: 'welcome',
@@ -122,9 +124,10 @@ const AIChat: React.FC<AIChatProps> = ({ open, onClose }) => {
     <Drawer
       title="OutBook AI 智能助手"
       placement="right"
-      width={500}
+      width={isMobile ? '100%' : 500}
       onClose={onClose}
       open={open}
+      className="mobile-drawer"
       styles={{
         body: {
           padding: 0,

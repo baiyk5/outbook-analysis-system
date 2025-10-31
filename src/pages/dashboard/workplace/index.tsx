@@ -9,6 +9,7 @@ import EditableLinkGroup from './components/EditableLinkGroup';
 import type { ActivitiesType, CurrentUser } from './data.d';
 import { fakeChartData, queryActivities, queryProjectNotice } from './service';
 import useStyles from './style.style';
+import { useResponsive } from '@/utils/responsive';
 
 dayjs.extend(relativeTime);
 
@@ -90,6 +91,7 @@ const ExtraContent: FC<Record<string, any>> = () => {
 };
 const Workplace: FC = () => {
   const { styles } = useStyles();
+  const { isMobile, isTablet } = useResponsive();
 
   // 使用内联 Mock 数据，避免 API 请求慢的问题
   const projectLoading = false;
@@ -359,12 +361,12 @@ const Workplace: FC = () => {
       }
       extraContent={<ExtraContent />}
     >
-      <Row gutter={24}>
+      <Row gutter={isMobile ? [12, 12] : 24} className="mobile-gutter">
         <Col xl={16} lg={24} md={24} sm={24} xs={24}>
           <Card
-            className={styles.projectList}
+            className={`${styles.projectList} mobile-card`}
             style={{
-              marginBottom: 24,
+              marginBottom: isMobile ? 12 : 24,
             }}
             title="进行中的项目"
             variant="borderless"
@@ -399,11 +401,11 @@ const Workplace: FC = () => {
           <Card
             styles={{
               body: {
-                padding: activitiesLoading ? 16 : 0,
+                padding: activitiesLoading ? (isMobile ? 12 : 16) : 0,
               },
             }}
             variant="borderless"
-            className={styles.activeCard}
+            className={`${styles.activeCard} mobile-card`}
             title="动态"
             loading={activitiesLoading}
           >
@@ -411,16 +413,17 @@ const Workplace: FC = () => {
               loading={activitiesLoading}
               renderItem={(item) => renderActivities(item)}
               dataSource={activities}
-              className={styles.activitiesList}
-              size="large"
+              className={`${styles.activitiesList} mobile-list`}
+              size={isMobile ? 'small' : 'large'}
             />
           </Card>
         </Col>
         <Col xl={8} lg={24} md={24} sm={24} xs={24}>
           <Card
             style={{
-              marginBottom: 24,
+              marginBottom: isMobile ? 12 : 24,
             }}
+            className="mobile-card"
             title="便捷导航"
             variant="borderless"
           >
@@ -432,14 +435,15 @@ const Workplace: FC = () => {
           </Card>
           <Card
             style={{
-              marginBottom: 24,
+              marginBottom: isMobile ? 12 : 24,
             }}
+            className="mobile-card"
             variant="borderless"
             title="团队能力指数"
             loading={data?.radarData?.length === 0}
           >
             <Radar
-              height={343}
+              height={isMobile ? 250 : 343}
               data={data?.radarData || []}
               xField="label"
               colorField="name"

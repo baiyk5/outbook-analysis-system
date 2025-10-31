@@ -2,8 +2,11 @@ import { PageContainer } from '@ant-design/pro-components';
 import { Card, Col, Row, Statistic } from 'antd';
 import { Pie, Column, Line, DualAxes, Area, WordCloud } from '@ant-design/plots';
 import React from 'react';
+import { useResponsive } from '@/utils/responsive';
 
 const Statistics: React.FC = () => {
+  const { isMobile, isTablet } = useResponsive();
+
   // Mock 数据
   const overview = {
     totalProjects: 7,
@@ -310,11 +313,15 @@ const Statistics: React.FC = () => {
   };
 
   return (
-    <PageContainer title="数据统计分析" subTitle="项目数据深度分析与可视化">
+    <PageContainer
+      title="数据统计分析"
+      subTitle={isMobile ? "" : "项目数据深度分析与可视化"}
+      className="mobile-page-header"
+    >
       {/* 统计卡片 */}
-      <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+      <Row gutter={isMobile ? [8, 8] : [16, 16]} style={{ marginBottom: isMobile ? 12 : 16 }} className="mobile-gutter mobile-statistic">
         <Col xs={24} sm={12} lg={6}>
-          <Card>
+          <Card className="mobile-card">
             <Statistic
               title="项目总数"
               value={overview.totalProjects}
@@ -324,7 +331,7 @@ const Statistics: React.FC = () => {
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <Card>
+          <Card className="mobile-card">
             <Statistic
               title="总成交金额"
               value={overview.totalAmount}
@@ -335,7 +342,7 @@ const Statistics: React.FC = () => {
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <Card>
+          <Card className="mobile-card">
             <Statistic
               title="BUG总数"
               value={overview.totalBugs}
@@ -345,7 +352,7 @@ const Statistics: React.FC = () => {
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
-          <Card>
+          <Card className="mobile-card">
             <Statistic
               title="工单总数"
               value={overview.totalTickets}
@@ -357,26 +364,28 @@ const Statistics: React.FC = () => {
       </Row>
 
       {/* 词云图 */}
-      <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+      <Row gutter={isMobile ? [8, 8] : [16, 16]} style={{ marginBottom: isMobile ? 12 : 16 }} className="mobile-gutter">
         <Col span={24}>
-          <Card title="学校项目词云图" extra="基于成交金额权重">
-            <WordCloud {...wordCloudConfig} style={{ height: 400 }} />
+          <Card title="学校项目词云图" extra={isMobile ? "" : "基于成交金额权重"} className="mobile-card mobile-chart">
+            <div style={{ height: isMobile ? 250 : 400, width: '100%', overflow: 'hidden' }}>
+              <WordCloud {...wordCloudConfig} />
+            </div>
           </Card>
         </Col>
       </Row>
 
       {/* BUG分析 */}
-      <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+      <Row gutter={isMobile ? [8, 8] : [16, 16]} style={{ marginBottom: isMobile ? 12 : 16 }} className="mobile-gutter">
         <Col xs={24} lg={12}>
-          <Card title="成员BUG占比分布" bodyStyle={{ padding: '20px' }}>
-            <div style={{ height: 400 }}>
+          <Card title="成员BUG占比分布" bodyStyle={{ padding: isMobile ? '12px' : '20px' }} className="mobile-card mobile-chart">
+            <div style={{ height: isMobile ? 250 : 400 }}>
               <Pie {...bugMemberConfig} />
             </div>
           </Card>
         </Col>
         <Col xs={24} lg={12}>
-          <Card title="项目BUG率分析" bodyStyle={{ padding: '20px' }}>
-            <div style={{ height: 400 }}>
+          <Card title="项目BUG率分析" bodyStyle={{ padding: isMobile ? '12px' : '20px' }} className="mobile-card mobile-chart">
+            <div style={{ height: isMobile ? 250 : 400 }}>
               <Column {...bugProjectConfig} />
             </div>
           </Card>
@@ -384,9 +393,9 @@ const Statistics: React.FC = () => {
       </Row>
 
       {/* 工单趋势 */}
-      <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+      <Row gutter={isMobile ? [8, 8] : [16, 16]} style={{ marginBottom: isMobile ? 12 : 16 }} className="mobile-gutter">
         <Col span={24}>
-          <Card title="工单趋势分析">
+          <Card title="工单趋势分析" className="mobile-card mobile-chart">
             <Line
               data={[
                 ...ticketTrendData.map(item => ({ ...item, type: '维护工单', value: item.maintenance })),
@@ -398,17 +407,17 @@ const Statistics: React.FC = () => {
               smooth={true}
               legend={{ position: 'top' as const }}
               autoFit={true}
-              style={{ height: 400 }}
+              style={{ height: isMobile ? 250 : 400 }}
             />
           </Card>
         </Col>
       </Row>
 
       {/* 财务数据 */}
-      <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+      <Row gutter={isMobile ? [8, 8] : [16, 16]} style={{ marginBottom: isMobile ? 12 : 16 }} className="mobile-gutter">
         <Col span={24}>
-          <Card title="财务数据分析" extra="成交金额与利润对比" bodyStyle={{ padding: '20px' }}>
-            <div style={{ height: 400 }}>
+          <Card title="财务数据分析" extra={isMobile ? "" : "成交金额与利润对比"} bodyStyle={{ padding: isMobile ? '12px' : '20px' }} className="mobile-card mobile-chart">
+            <div style={{ height: isMobile ? 250 : 400 }}>
               <DualAxes {...financialConfig} />
             </div>
           </Card>
@@ -416,10 +425,10 @@ const Statistics: React.FC = () => {
       </Row>
 
       {/* 项目趋势 */}
-      <Row gutter={[16, 16]}>
+      <Row gutter={isMobile ? [8, 8] : [16, 16]} className="mobile-gutter">
         <Col span={24}>
-          <Card title="项目数量趋势">
-            <Area {...projectTrendConfig} style={{ height: 400 }} />
+          <Card title="项目数量趋势" className="mobile-card mobile-chart">
+            <Area {...projectTrendConfig} style={{ height: isMobile ? 250 : 400 }} />
           </Card>
         </Col>
       </Row>

@@ -31,6 +31,18 @@ const useStyles = createStyles(({ token }) => {
       maxWidth: "500px",
       position: "relative",
       top: -100,
+      '@media (max-width: 768px)': {
+        maxWidth: "90%",
+        top: -50,
+        minWidth: "auto",
+      },
+      // 覆盖 ProComponents LoginForm 的默认最小宽度
+      '& .ant-pro-form-login-container': {
+        '@media (max-width: 768px)': {
+          minWidth: "auto !important",
+          width: "100% !important",
+        },
+      },
     },
     header: {
       textAlign: "center",
@@ -41,17 +53,29 @@ const useStyles = createStyles(({ token }) => {
       alignItems: "center",
       justifyContent: "center",
       marginBottom: "16px",
+      '@media (max-width: 768px)': {
+        marginBottom: "12px",
+      },
     },
     logoImage: {
       width: "44px",
       height: "44px",
       marginRight: "24px",
+      '@media (max-width: 768px)': {
+        width: "32px",
+        height: "32px",
+        marginRight: "12px",
+      },
     },
     title: {
       fontSize: "33px",
       fontWeight: 600,
       color: "#1a1a1a",
       margin: '0 0 0 12px',
+      '@media (max-width: 768px)': {
+        fontSize: "22px",
+        margin: '0 0 0 8px',
+      },
       "& .text-char": {
         display: "inline-block",
         animation: "charFadeIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards",
@@ -71,6 +95,10 @@ const useStyles = createStyles(({ token }) => {
       fontSize: "14px",
       color: "#999",
       marginTop: "8px",
+      '@media (max-width: 768px)': {
+        fontSize: "12px",
+        marginTop: "4px",
+      },
     },
     tabs: {
       marginBottom: "24px",

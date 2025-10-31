@@ -17,6 +17,7 @@ import {
 } from '@ant-design/icons';
 import type { ActionType } from '@ant-design/pro-components';
 import moment from 'moment';
+import { useResponsive, getResponsiveDrawerWidth } from '@/utils/responsive';
 
 interface MemberType {
   id?: number;
@@ -50,6 +51,7 @@ const Projects: React.FC = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [currentProject, setCurrentProject] = useState<ProjectType | null>(null);
   const actionRef = useRef<ActionType>();
+  const { isMobile, isTablet, deviceType } = useResponsive();
 
   // 内联 Mock 数据
   const mockProjects: ProjectType[] = [
@@ -355,14 +357,15 @@ const Projects: React.FC = () => {
       title: '项目名称',
       dataIndex: 'name',
       key: 'name',
-      fixed: 'left',
-      width: 200,
+      fixed: isMobile ? false : 'left',
+      width: isMobile ? 150 : 200,
     },
     {
       title: '学校',
       dataIndex: 'school',
       key: 'school',
       width: 150,
+      hideInTable: isMobile,
     },
     {
       title: '开始时间',
@@ -370,6 +373,7 @@ const Projects: React.FC = () => {
       key: 'startDate',
       valueType: 'date',
       width: 120,
+      hideInTable: isMobile,
     },
     {
       title: '结束时间',
@@ -377,6 +381,7 @@ const Projects: React.FC = () => {
       key: 'endDate',
       valueType: 'date',
       width: 120,
+      hideInTable: isMobile,
     },
     {
       title: '预计天数',
@@ -384,6 +389,7 @@ const Projects: React.FC = () => {
       key: 'estimatedDays',
       width: 100,
       render: (text) => `${text} 天`,
+      hideInTable: isMobile,
     },
     {
       title: '实际天数',
@@ -399,11 +405,13 @@ const Projects: React.FC = () => {
           </span>
         );
       },
+      hideInTable: isMobile,
     },
     {
       title: '完成进度',
       key: 'progress',
-      width: 180,
+      width: isMobile ? 120 : 180,
+      hideInTable: isMobile,
       render: (_, record) => {
         const percent = record.status === 'completed'
           ? 100
@@ -470,6 +478,7 @@ const Projects: React.FC = () => {
       key: 'amount',
       width: 120,
       render: (text) => `¥${text.toLocaleString()}`,
+      hideInTable: isMobile,
     },
     {
       title: '预估利润',
@@ -477,6 +486,7 @@ const Projects: React.FC = () => {
       key: 'profit',
       width: 120,
       render: (text) => `¥${text.toLocaleString()}`,
+      hideInTable: isMobile,
     },
     {
       title: 'BUG总数',
@@ -487,6 +497,7 @@ const Projects: React.FC = () => {
         const total = typeof bugs === 'number' ? bugs : bugs.total;
         return <Tag color="red">{total}</Tag>;
       },
+      hideInTable: isMobile,
     },
     {
       title: '工单数',
@@ -499,6 +510,7 @@ const Projects: React.FC = () => {
           : tickets.maintenance + tickets.repair;
         return <Tag color="orange">{total}</Tag>;
       },
+      hideInTable: isMobile,
     },
     {
       title: '成员数',
@@ -506,12 +518,13 @@ const Projects: React.FC = () => {
       key: 'memberCount',
       width: 80,
       render: (members) => <Tag color="blue">{members?.length || 0}</Tag>,
+      hideInTable: isMobile,
     },
     {
       title: '操作',
       key: 'action',
-      fixed: 'right',
-      width: 100,
+      fixed: isMobile ? false : 'right',
+      width: isMobile ? 80 : 100,
       render: (_, record) => (
         <Space>
           <Button
@@ -521,8 +534,9 @@ const Projects: React.FC = () => {
               setCurrentProject(record);
               setDrawerVisible(true);
             }}
+            size={isMobile ? 'small' : 'middle'}
           >
-            详情
+            {isMobile ? '' : '详情'}
           </Button>
         </Space>
       ),
@@ -530,25 +544,31 @@ const Projects: React.FC = () => {
   ];
 
   return (
-    <PageContainer title="项目管理" subTitle="查看和管理所有定制项目">
+    <PageContainer
+      title="项目管理"
+      subTitle={isMobile ? "" : "查看和管理所有定制项目"}
+      className="mobile-page-header"
+    >
       <ProTable<ProjectType>
         columns={columns}
         actionRef={actionRef}
         dataSource={mockProjects}
         rowKey="id"
-        search={{
+        search={isMobile ? false : {
           labelWidth: 'auto',
         }}
         pagination={{
-          pageSize: 10,
+          pageSize: isMobile ? 5 : 10,
+          simple: isMobile,
         }}
-        scroll={{ x: 1800 }}
+        scroll={{ x: isMobile ? 400 : 1800 }}
         dateFormatter="string"
         toolBarRender={() => [
-          <Button key="export" type="primary">
+          <Button key="export" type="primary" size={isMobile ? 'small' : 'middle'}>
             导出数据
           </Button>,
         ]}
+        className="mobile-table"
         expandable={{
           expandedRowRender: (record) => {
             if (!record.members || record.members.length === 0) {
@@ -575,69 +595,70 @@ const Projects: React.FC = () => {
       <Drawer
         title={
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <FileTextOutlined style={{ fontSize: '20px', color: '#1890ff' }} />
-            <span style={{ fontSize: '18px', fontWeight: 600 }}>项目详情</span>
+            <FileTextOutlined style={{ fontSize: isMobile ? '16px' : '20px', color: '#1890ff' }} />
+            <span style={{ fontSize: isMobile ? '16px' : '18px', fontWeight: 600 }}>项目详情</span>
           </div>
         }
-        width={1000}
+        width={getResponsiveDrawerWidth(deviceType)}
         open={drawerVisible}
         onClose={() => setDrawerVisible(false)}
+        className="mobile-drawer"
       >
         {currentProject && (
           <div>
             {/* 关键指标卡片 */}
-            <Row gutter={16} style={{ marginBottom: 24 }}>
-              <Col span={6}>
-                <Card>
+            <Row gutter={isMobile ? [8, 8] : 16} style={{ marginBottom: isMobile ? 12 : 24 }} className="mobile-gutter mobile-statistic">
+              <Col xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Card className="mobile-card">
                   <Statistic
                     title="成交金额"
                     value={currentProject.amount}
                     precision={0}
                     prefix={<DollarOutlined />}
                     suffix="元"
-                    valueStyle={{ color: '#3f8600', fontSize: '20px' }}
+                    valueStyle={{ color: '#3f8600', fontSize: isMobile ? '16px' : '20px' }}
                   />
                 </Card>
               </Col>
-              <Col span={6}>
-                <Card>
+              <Col xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Card className="mobile-card">
                   <Statistic
                     title="预估利润"
                     value={currentProject.profit}
                     precision={0}
                     prefix={<RiseOutlined />}
                     suffix="元"
-                    valueStyle={{ color: '#cf1322', fontSize: '20px' }}
+                    valueStyle={{ color: '#cf1322', fontSize: isMobile ? '16px' : '20px' }}
                   />
                 </Card>
               </Col>
-              <Col span={6}>
-                <Card>
+              <Col xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Card className="mobile-card">
                   <Statistic
                     title="团队成员"
                     value={currentProject.members?.length || 0}
                     prefix={<TeamOutlined />}
                     suffix="人"
-                    valueStyle={{ color: '#1890ff', fontSize: '20px' }}
+                    valueStyle={{ color: '#1890ff', fontSize: isMobile ? '16px' : '20px' }}
                   />
                 </Card>
               </Col>
-              <Col span={6}>
-                <Card>
+              <Col xs={12} sm={12} md={6} lg={6} xl={6}>
+                <Card className="mobile-card">
                   <Statistic
                     title="BUG总数"
                     value={typeof currentProject.bugs === 'number' ? currentProject.bugs : currentProject.bugs.total}
                     prefix={<BugOutlined />}
                     suffix="个"
-                    valueStyle={{ color: '#ff4d4f', fontSize: '20px' }}
+                    valueStyle={{ color: '#ff4d4f', fontSize: isMobile ? '16px' : '20px' }}
                   />
                 </Card>
               </Col>
             </Row>
 
             {/* 基本信息 */}
-            <Card title="基本信息" style={{ marginBottom: 16 }}>
-              <Descriptions column={2} bordered>
+            <Card title="基本信息" style={{ marginBottom: isMobile ? 12 : 16 }} className="mobile-card mobile-descriptions">
+              <Descriptions column={isMobile ? 1 : 2} bordered size={isMobile ? 'small' : 'default'}>
                 <Descriptions.Item label="项目名称" span={2}>
                   <strong style={{ fontSize: '15px' }}>{currentProject.name}</strong>
                 </Descriptions.Item>
@@ -671,7 +692,7 @@ const Projects: React.FC = () => {
             </Card>
 
             {/* 项目进度 */}
-            <Card title="项目进度" style={{ marginBottom: 16 }}>
+            <Card title="项目进度" style={{ marginBottom: isMobile ? 12 : 16 }} className="mobile-card mobile-progress">
               <div style={{ marginBottom: 16 }}>
                 <div style={{ marginBottom: 8, display: 'flex', justifyContent: 'space-between' }}>
                   <span>整体完成度</span>
@@ -721,8 +742,8 @@ const Projects: React.FC = () => {
             </Card>
 
             {/* 质量统计 */}
-            <Card title="质量统计" style={{ marginBottom: 16 }}>
-              <Row gutter={16}>
+            <Card title="质量统计" style={{ marginBottom: isMobile ? 12 : 16 }} className="mobile-card">
+              <Row gutter={isMobile ? [8, 8] : 16} className="mobile-gutter">
                 <Col span={12}>
                   <div style={{ marginBottom: 16 }}>
                     <div style={{ marginBottom: 8, display: 'flex', justifyContent: 'space-between' }}>
@@ -812,8 +833,10 @@ const Projects: React.FC = () => {
             </Card>
 
             {/* 项目成员 */}
-            <Card title="项目成员" style={{ marginBottom: 16 }}>
+            <Card title="项目成员" style={{ marginBottom: isMobile ? 12 : 16 }} className="mobile-card">
               <List
+                className="mobile-list"
+                size={isMobile ? 'small' : 'default'}
                 dataSource={currentProject.members}
                 renderItem={(member: MemberType, index: number) => {
                   const workProgress = member.workDays

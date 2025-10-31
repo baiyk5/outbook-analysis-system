@@ -4,6 +4,7 @@ import { FileTextOutlined, DownloadOutlined, RobotOutlined, CalendarOutlined } f
 import { useEffect, useState } from 'react';
 import { request } from '@umijs/max';
 import moment from 'moment';
+import { useResponsive, getResponsiveModalWidth } from '@/utils/responsive';
 
 const { RangePicker } = DatePicker;
 
@@ -20,6 +21,7 @@ const Reports: React.FC = () => {
   const [aiModalVisible, setAiModalVisible] = useState(false);
   const [aiGenerating, setAiGenerating] = useState(false);
   const [form] = Form.useForm();
+  const { isMobile, isTablet, deviceType } = useResponsive();
 
   // 内联 Mock 数据
   const monthlyReports: ReportType[] = [
@@ -131,25 +133,28 @@ const Reports: React.FC = () => {
         </Button>,
       ]}
     >
-      <ProCard split="vertical">
-        <ProCard title="月度报告" colSpan="50%">
+      <ProCard split={isMobile ? 'horizontal' : 'vertical'}>
+        <ProCard title="月度报告" colSpan={isMobile ? '100%' : '50%'} className="mobile-card">
           <Form
             form={form}
-            layout="inline"
+            layout={isMobile ? 'vertical' : 'inline'}
             onFinish={handleGenerateReport}
-            style={{ marginBottom: 16 }}
+            style={{ marginBottom: isMobile ? 12 : 16 }}
+            className="mobile-form"
           >
             <Form.Item name="month" label="选择月份">
-              <DatePicker picker="month" />
+              <DatePicker picker="month" style={{ width: isMobile ? '100%' : 'auto' }} />
             </Form.Item>
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" block={isMobile} size={isMobile ? 'middle' : 'middle'}>
                 生成月度报告
               </Button>
             </Form.Item>
           </Form>
 
           <List
+            className="mobile-list"
+            size={isMobile ? 'small' : 'default'}
             dataSource={monthlyReports}
             renderItem={(item) => (
               <List.Item
@@ -186,23 +191,26 @@ const Reports: React.FC = () => {
           />
         </ProCard>
 
-        <ProCard title="季度报告" colSpan="50%">
+        <ProCard title="季度报告" colSpan={isMobile ? '100%' : '50%'} className="mobile-card">
           <Form
-            layout="inline"
+            layout={isMobile ? 'vertical' : 'inline'}
             onFinish={handleGenerateReport}
-            style={{ marginBottom: 16 }}
+            style={{ marginBottom: isMobile ? 12 : 16 }}
+            className="mobile-form"
           >
             <Form.Item name="quarter" label="选择季度">
-              <DatePicker picker="quarter" />
+              <DatePicker picker="quarter" style={{ width: isMobile ? '100%' : 'auto' }} />
             </Form.Item>
             <Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit" block={isMobile} size={isMobile ? 'middle' : 'middle'}>
                 生成季度报告
               </Button>
             </Form.Item>
           </Form>
 
           <List
+            className="mobile-list"
+            size={isMobile ? 'small' : 'default'}
             dataSource={quarterlyReports}
             renderItem={(item) => (
               <List.Item
@@ -251,6 +259,8 @@ const Reports: React.FC = () => {
         open={aiModalVisible}
         onCancel={() => setAiModalVisible(false)}
         footer={null}
+        width={getResponsiveModalWidth(deviceType)}
+        className="mobile-modal"
       >
         <Spin spinning={aiGenerating} tip="AI 正在分析数据并生成报告...">
           <Form

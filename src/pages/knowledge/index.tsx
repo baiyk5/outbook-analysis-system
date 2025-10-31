@@ -3,6 +3,7 @@ import { Card, List, Tag, Space, Button, Input, Select, Statistic, Row, Col, Mod
 import { FileTextOutlined, FilePdfOutlined, FileWordOutlined, EyeOutlined, DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { request } from '@umijs/max';
+import { useResponsive, getResponsiveModalWidth } from '@/utils/responsive';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -21,6 +22,7 @@ const Knowledge: React.FC = () => {
   const [filterType, setFilterType] = useState<string>('all');
   const [previewVisible, setPreviewVisible] = useState(false);
   const [currentDoc, setCurrentDoc] = useState<DocumentType | null>(null);
+  const { isMobile, isTablet, deviceType } = useResponsive();
 
   // 内联 Mock 数据
   const mockDocuments: DocumentType[] = [
@@ -199,9 +201,9 @@ const Knowledge: React.FC = () => {
       ]}
     >
       {/* 统计卡片 */}
-      <Row gutter={16} style={{ marginBottom: 24 }}>
-        <Col span={6}>
-          <Card>
+      <Row gutter={isMobile ? [8, 8] : 16} style={{ marginBottom: isMobile ? 12 : 24 }} className="mobile-gutter mobile-statistic">
+        <Col xs={12} sm={12} md={6} lg={6}>
+          <Card className="mobile-card">
             <Statistic
               title="文档总数"
               value={stats.total || 0}
@@ -209,8 +211,8 @@ const Knowledge: React.FC = () => {
             />
           </Card>
         </Col>
-        <Col span={6}>
-          <Card>
+        <Col xs={12} sm={12} md={6} lg={6}>
+          <Card className="mobile-card">
             <Statistic
               title="需求报告"
               value={stats.requirement || 0}
@@ -218,8 +220,8 @@ const Knowledge: React.FC = () => {
             />
           </Card>
         </Col>
-        <Col span={6}>
-          <Card>
+        <Col xs={12} sm={12} md={6} lg={6}>
+          <Card className="mobile-card">
             <Statistic
               title="验收报告"
               value={stats.acceptance || 0}
@@ -227,8 +229,8 @@ const Knowledge: React.FC = () => {
             />
           </Card>
         </Col>
-        <Col span={6}>
-          <Card>
+        <Col xs={12} sm={12} md={6} lg={6}>
+          <Card className="mobile-card">
             <Statistic
               title="设计文档"
               value={stats.design || 0}
@@ -239,21 +241,21 @@ const Knowledge: React.FC = () => {
       </Row>
 
       {/* 搜索和筛选 */}
-      <Card style={{ marginBottom: 16 }}>
-        <Space size="large" style={{ width: '100%' }}>
+      <Card style={{ marginBottom: isMobile ? 12 : 16 }} className="mobile-card">
+        <Space size={isMobile ? 'small' : 'large'} style={{ width: '100%' }} direction={isMobile ? 'vertical' : 'horizontal'}>
           <Search
-            placeholder="搜索文档标题或项目名称"
+            placeholder={isMobile ? "搜索文档" : "搜索文档标题或项目名称"}
             allowClear
             enterButton={<SearchOutlined />}
-            size="large"
+            size={isMobile ? 'middle' : 'large'}
             onSearch={handleSearch}
-            style={{ width: 400 }}
+            style={{ width: isMobile ? '100%' : 400 }}
           />
           <Select
             value={filterType}
             onChange={setFilterType}
-            style={{ width: 200 }}
-            size="large"
+            style={{ width: isMobile ? '100%' : 200 }}
+            size={isMobile ? 'middle' : 'large'}
           >
             <Option value="all">全部类型</Option>
             <Option value="requirement">需求报告</Option>
@@ -265,18 +267,29 @@ const Knowledge: React.FC = () => {
       </Card>
 
       {/* 文档列表 */}
-      <Card>
+      <Card className="mobile-card">
         <List
           itemLayout="horizontal"
           dataSource={filteredDocuments}
+          className="mobile-list"
+          size={isMobile ? 'small' : 'default'}
           pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
+            pageSize: isMobile ? 5 : 10,
+            showSizeChanger: !isMobile,
             showTotal: (total) => `共 ${total} 个文档`,
+            simple: isMobile,
           }}
           renderItem={(item) => (
             <List.Item
-              actions={[
+              actions={isMobile ? [
+                <Button
+                  key="preview"
+                  type="link"
+                  size="small"
+                  icon={<EyeOutlined />}
+                  onClick={() => handlePreview(item)}
+                />,
+              ] : [
                 <Button
                   key="preview"
                   type="link"
@@ -328,12 +341,19 @@ const Knowledge: React.FC = () => {
         title={currentDoc?.title}
         open={previewVisible}
         onCancel={() => setPreviewVisible(false)}
-        width={800}
+        width={getResponsiveModalWidth(deviceType)}
+        className="mobile-modal"
         footer={[
-          <Button key="download" type="primary" icon={<DownloadOutlined />} onClick={() => currentDoc && handleDownload(currentDoc)}>
-            下载
+          <Button
+            key="download"
+            type="primary"
+            icon={<DownloadOutlined />}
+            onClick={() => currentDoc && handleDownload(currentDoc)}
+            size={isMobile ? 'small' : 'middle'}
+          >
+            {isMobile ? '' : '下载'}
           </Button>,
-          <Button key="close" onClick={() => setPreviewVisible(false)}>
+          <Button key="close" onClick={() => setPreviewVisible(false)} size={isMobile ? 'small' : 'middle'}>
             关闭
           </Button>,
         ]}

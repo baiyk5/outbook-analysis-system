@@ -76,19 +76,34 @@ export const layout: RunTimeLayoutConfig = ({
   const [aiChatOpen, setAiChatOpen] = useState(false);
 
   return {
-    actionsRender: () => [
-      <Tooltip key="ai-chat" title="OutBook AI 智能助手">
-        <Button
-          type="text"
-          icon={
-            <AliwangwangOutlined style={{ fontSize: "18px", color: '#1890ff' }} />
-          }
-          onClick={() => setAiChatOpen(true)}
-        />
-      </Tooltip>,
-      // <Question key="doc" />,
-      // <SelectLang key="SelectLang" />,
-    ],
+    actionsRender: (props) => {
+      // 移动端只显示 AI 助手图标，不显示文字提示
+      if (props?.isMobile) {
+        return [
+          <Button
+            key="ai-chat"
+            type="text"
+            icon={
+              <AliwangwangOutlined style={{ fontSize: "18px", color: '#1890ff' }} />
+            }
+            onClick={() => setAiChatOpen(true)}
+          />,
+        ];
+      }
+      return [
+        <Tooltip key="ai-chat" title="OutBook AI 智能助手">
+          <Button
+            type="text"
+            icon={
+              <AliwangwangOutlined style={{ fontSize: "18px", color: '#1890ff' }} />
+            }
+            onClick={() => setAiChatOpen(true)}
+          />
+        </Tooltip>,
+        // <Question key="doc" />,
+        // <SelectLang key="SelectLang" />,
+      ];
+    },
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
