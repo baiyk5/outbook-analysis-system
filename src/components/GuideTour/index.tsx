@@ -12,11 +12,27 @@ import { useResponsive } from '@/utils/responsive';
 interface GuideTourProps {
   // 是否自动开始（首次访问时）
   autoStart?: boolean;
+  // 外部控制的打开状态（用于从右上角按钮触发）
+  externalOpen?: boolean;
+  // 外部状态变化回调
+  onExternalOpenChange?: (open: boolean) => void;
 }
 
-const GuideTour: React.FC<GuideTourProps> = ({ autoStart = true }) => {
+const GuideTour: React.FC<GuideTourProps> = ({
+  autoStart = true,
+  externalOpen = false,
+  onExternalOpenChange,
+}) => {
   const [open, setOpen] = useState(false);
   const { isMobile } = useResponsive();
+
+  // 监听外部触发
+  useEffect(() => {
+    if (externalOpen) {
+      setOpen(true);
+      onExternalOpenChange?.(false); // 重置外部状态
+    }
+  }, [externalOpen, onExternalOpenChange]);
 
   useEffect(() => {
     // 移动端不显示引导
@@ -123,8 +139,8 @@ const GuideTour: React.FC<GuideTourProps> = ({ autoStart = true }) => {
             <strong>小贴士：</strong>
           </p>
           <ul style={{ paddingLeft: '20px', marginTop: '8px' }}>
-            <li>点击<strong>右下角的帮助按钮</strong>可以随时重新查看引导</li>
-            <li>点击<strong>右上角的 AI 助手</strong>获取智能数据分析</li>
+            <li>点击<strong>右上角的帮助按钮（问号图标）</strong>可以随时重新查看引导</li>
+            <li>点击<strong>右上角的 AI 助手（机器人图标）</strong>获取智能数据分析</li>
           </ul>
           <p style={{ marginTop: '12px', color: '#52c41a', fontWeight: 'bold' }}>
             祝你使用愉快！🎉
@@ -142,24 +158,7 @@ const GuideTour: React.FC<GuideTourProps> = ({ autoStart = true }) => {
 
   return (
     <>
-      {/* 帮助按钮 - 固定在右下角 */}
-      <Button
-        type="primary"
-        shape="circle"
-        size="large"
-        icon={<QuestionCircleOutlined />}
-        onClick={() => setOpen(true)}
-        style={{
-          position: 'fixed',
-          right: '24px',
-          bottom: '24px',
-          zIndex: 999,
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-        }}
-        title="查看操作引导"
-      />
-
-      {/* Tour 引导 */}
+      {/* Tour 引导 - 不再显示右下角的按钮，改为从右上角触发 */}
       <Tour
         open={open}
         onClose={handleClose}

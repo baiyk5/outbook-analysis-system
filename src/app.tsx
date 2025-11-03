@@ -6,6 +6,7 @@ import {
   AliwangwangOutlined,
   LinkOutlined,
   SlackOutlined,
+  QuestionCircleOutlined,
 } from "@ant-design/icons";
 import type { Settings as LayoutSettings } from "@ant-design/pro-components";
 import { SettingDrawer } from "@ant-design/pro-components";
@@ -74,6 +75,7 @@ export const layout: RunTimeLayoutConfig = ({
   setInitialState,
 }) => {
   const [aiChatOpen, setAiChatOpen] = useState(false);
+  const [guideTourOpen, setGuideTourOpen] = useState(false);
 
   return {
     actionsRender: (props) => {
@@ -91,6 +93,15 @@ export const layout: RunTimeLayoutConfig = ({
         ];
       }
       return [
+        <Tooltip key="guide" title="查看操作引导">
+          <Button
+            type="text"
+            icon={
+              <QuestionCircleOutlined style={{ fontSize: "18px", color: '#1890ff' }} />
+            }
+            onClick={() => setGuideTourOpen(true)}
+          />
+        </Tooltip>,
         <Tooltip key="ai-chat" title="OutBook AI 智能助手">
           <Button
             type="text"
@@ -165,7 +176,11 @@ export const layout: RunTimeLayoutConfig = ({
         <>
           {children}
           <AIChat open={aiChatOpen} onClose={() => setAiChatOpen(false)} />
-          <GuideTour autoStart={true} />
+          <GuideTour
+            autoStart={true}
+            externalOpen={guideTourOpen}
+            onExternalOpenChange={setGuideTourOpen}
+          />
           {isDev && (
             <SettingDrawer
               disableUrlParams

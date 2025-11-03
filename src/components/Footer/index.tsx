@@ -17,13 +17,13 @@ const Footer: React.FC = () => {
           blankTarget: true,
         },
         {
-          key: 'github',
+          key: 'chart',
           title: <BarChartOutlined />,
           href: 'http://localhost:8000',
           blankTarget: true,
         },
         {
-          key: 'Ant Design',
+          key: 'Data Analytics System',
           title: '项目数据分析系统',
           href: 'http://localhost:8000',
           blankTarget: true,
