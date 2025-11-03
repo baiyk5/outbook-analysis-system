@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Bubble, Sender } from '@ant-design/x';
 import { Drawer, message } from 'antd';
+import { AliwangwangOutlined } from '@ant-design/icons';
+import { useModel } from '@umijs/max';
 import { askQuestion } from '@/services/deepseek';
 import { getSystemDataSummary, analyzeByQuestion } from '@/services/dataAnalysis';
 import './index.less';
@@ -20,6 +22,8 @@ interface AIChatProps {
 
 const AIChat: React.FC<AIChatProps> = ({ open, onClose }) => {
   const { isMobile } = useResponsive();
+  const { initialState } = useModel('@@initialState');
+  const currentUser = initialState?.currentUser;
   const [messages, setMessages] = useState<Message[]>([
     {
       key: 'welcome',
@@ -149,12 +153,12 @@ const AIChat: React.FC<AIChatProps> = ({ open, onClose }) => {
               avatar:
                 msg.role === 'ai'
                   ? {
-                      icon: '🤖',
+                      icon: <AliwangwangOutlined />,
                       style: { background: '#1677ff' },
                     }
                   : {
-                      icon: '👤',
-                      style: { background: '#87d068' },
+                      src: currentUser?.avatar,
+                      // style: { background: '#87d068' },
                     },
               variant: msg.role === 'user' ? 'filled' : 'outlined',
               typing: msg.role === 'ai' && !msg.loading ? { step: 5, interval: 20 } : false,

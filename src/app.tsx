@@ -113,6 +113,11 @@ export const layout: RunTimeLayoutConfig = ({
     },
     waterMarkProps: {
       content: initialState?.currentUser?.name,
+      fontSize: 14,
+      gapX: 150,
+      gapY: 150,
+      width: 120,
+      height: 64,
     },
     footerRender: () => <Footer />,
     onPageChange: () => {
