@@ -1,0 +1,237 @@
+/**
+ * 知识库数据 Mock
+ */
+
+export const mockKnowledgeData = {
+  success: true,
+  data: [
+    {
+      id: 1,
+      projectName: '清华大学智慧校园系统',
+      documents: [
+        {
+          id: 1,
+          title: '项目需求文档',
+          type: 'requirement',
+          status: 'published',
+          author: '张三',
+          createdAt: '2024-01-15',
+          updatedAt: '2024-01-20',
+          tags: ['需求', '智慧校园'],
+        },
+        {
+          id: 2,
+          title: '技术方案设计',
+          type: 'design',
+          status: 'published',
+          author: '李四',
+          createdAt: '2024-01-22',
+          updatedAt: '2024-01-25',
+          tags: ['设计', '架构'],
+        },
+        {
+          id: 3,
+          title: '接口文档',
+          type: 'api',
+          status: 'published',
+          author: '王五',
+          createdAt: '2024-02-01',
+          updatedAt: '2024-03-15',
+          tags: ['API', '接口'],
+        },
+      ],
+    },
+    {
+      id: 2,
+      projectName: '北京大学在线教育平台',
+      documents: [
+        {
+          id: 4,
+          title: '产品原型设计',
+          type: 'design',
+          status: 'published',
+          author: '赵六',
+          createdAt: '2024-02-01',
+          updatedAt: '2024-02-10',
+          tags: ['原型', '设计'],
+        },
+        {
+          id: 5,
+          title: '数据库设计文档',
+          type: 'design',
+          status: 'published',
+          author: '孙七',
+          createdAt: '2024-02-05',
+          updatedAt: '2024-02-15',
+          tags: ['数据库', '设计'],
+        },
+        {
+          id: 6,
+          title: '用户手册',
+          type: 'manual',
+          status: 'draft',
+          author: '周八',
+          createdAt: '2024-03-01',
+          updatedAt: '2024-03-20',
+          tags: ['手册', '用户'],
+        },
+      ],
+    },
+    {
+      id: 3,
+      projectName: '复旦大学科研管理系统',
+      documents: [
+        {
+          id: 7,
+          title: '系统架构文档',
+          type: 'design',
+          status: 'published',
+          author: '吴九',
+          createdAt: '2024-03-10',
+          updatedAt: '2024-03-15',
+          tags: ['架构', '设计'],
+        },
+        {
+          id: 8,
+          title: '测试计划',
+          type: 'test',
+          status: 'published',
+          author: '郑十',
+          createdAt: '2024-03-20',
+          updatedAt: '2024-04-01',
+          tags: ['测试', '计划'],
+        },
+      ],
+    },
+    {
+      id: 4,
+      projectName: '上海交通大学学生管理平台',
+      documents: [
+        {
+          id: 9,
+          title: '需求规格说明书',
+          type: 'requirement',
+          status: 'published',
+          author: '冯十一',
+          createdAt: '2024-04-01',
+          updatedAt: '2024-04-05',
+          tags: ['需求', '规格'],
+        },
+        {
+          id: 10,
+          title: '前端开发规范',
+          type: 'standard',
+          status: 'published',
+          author: '陈十二',
+          createdAt: '2024-04-10',
+          updatedAt: '2024-04-15',
+          tags: ['规范', '前端'],
+        },
+        {
+          id: 11,
+          title: '后端API文档',
+          type: 'api',
+          status: 'published',
+          author: '褚十三',
+          createdAt: '2024-04-12',
+          updatedAt: '2024-05-01',
+          tags: ['API', '后端'],
+        },
+      ],
+    },
+    {
+      id: 5,
+      projectName: '浙江大学图书馆管理系统',
+      documents: [
+        {
+          id: 12,
+          title: '项目启动文档',
+          type: 'requirement',
+          status: 'draft',
+          author: '卫十四',
+          createdAt: '2024-05-01',
+          updatedAt: '2024-05-05',
+          tags: ['启动', '需求'],
+        },
+        {
+          id: 13,
+          title: '技术选型报告',
+          type: 'design',
+          status: 'draft',
+          author: '蒋十五',
+          createdAt: '2024-05-10',
+          updatedAt: '2024-05-15',
+          tags: ['技术', '选型'],
+        },
+      ],
+    },
+    {
+      id: 6,
+      projectName: '南京大学实验室预约系统',
+      documents: [
+        {
+          id: 14,
+          title: '项目计划书',
+          type: 'requirement',
+          status: 'draft',
+          author: '沈十六',
+          createdAt: '2024-06-01',
+          updatedAt: '2024-06-05',
+          tags: ['计划', '需求'],
+        },
+      ],
+    },
+  ],
+};
+
+export const mockKnowledgeStats = {
+  success: true,
+  data: {
+    totalDocuments: 14,
+    byType: {
+      requirement: 4,
+      design: 5,
+      api: 2,
+      manual: 1,
+      test: 1,
+      standard: 1,
+    },
+    byStatus: {
+      published: 10,
+      draft: 4,
+    },
+    recentUpdates: [
+      {
+        id: 11,
+        title: '后端API文档',
+        projectName: '上海交通大学学生管理平台',
+        updatedAt: '2024-05-01',
+      },
+      {
+        id: 6,
+        title: '用户手册',
+        projectName: '北京大学在线教育平台',
+        updatedAt: '2024-03-20',
+      },
+      {
+        id: 3,
+        title: '接口文档',
+        projectName: '清华大学智慧校园系统',
+        updatedAt: '2024-03-15',
+      },
+      {
+        id: 13,
+        title: '技术选型报告',
+        projectName: '浙江大学图书馆管理系统',
+        updatedAt: '2024-05-15',
+      },
+      {
+        id: 14,
+        title: '项目计划书',
+        projectName: '南京大学实验室预约系统',
+        updatedAt: '2024-06-05',
+      },
+    ],
+  },
+};
+

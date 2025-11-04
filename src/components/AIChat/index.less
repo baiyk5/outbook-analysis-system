@@ -25,6 +25,77 @@
     z-index: 10;
     flex-shrink: 0;
   }
+
+  // Markdown 内容样式优化
+  .ant-bubble-content {
+    // 标题样式
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 600;
+      line-height: 1.4;
+      color: #262626;
+    }
+
+    // 列表样式
+    ul, ol {
+      line-height: 1.8;
+
+      li {
+        margin-bottom: 0.3em;
+      }
+    }
+
+    // 段落样式
+    p {
+      line-height: 1.6;
+      color: #595959;
+    }
+
+    // 代码样式
+    code {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    }
+
+    // 加粗文字
+    strong {
+      font-weight: 600;
+    }
+
+    // 链接样式
+    a {
+      color: #1677ff;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    // 表格样式
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1em 0;
+
+      th, td {
+        border: 1px solid #e8e8e8;
+        padding: 8px 12px;
+        text-align: left;
+      }
+
+      th {
+        background: #fafafa;
+        font-weight: 600;
+      }
+    }
+
+    // 引用样式
+    blockquote {
+      border-left: 4px solid #1677ff;
+      padding-left: 1em;
+      margin: 1em 0;
+      color: #8c8c8c;
+    }
+  }
 }
 
 // 移动端优化
